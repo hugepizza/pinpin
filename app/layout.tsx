@@ -1,5 +1,9 @@
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
+import Nav from "@/components/nav";
+import { AuthContextProvider } from "@/providers/auth-context";
+import { Toaster } from "@/components/ui/toaster";
+import { cn } from "@/lib/utils";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -17,11 +21,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={GeistSans.className}>
-      <body className="bg-background text-foreground">
-        <main className="min-h-screen flex flex-col items-center">
-          {children}
-        </main>
+    <html lang="en" className={cn(GeistSans.className)}>
+      <body className="bg-primary-foreground text-foreground w-screen min-h-screen overflow-x-hidden flex flex-col">
+        <AuthContextProvider>
+          <Nav />
+          <div className="flex flex-col items-center w-full  px-1 sm:px-48 grow">
+            {children}
+          </div>
+        </AuthContextProvider>
+        <Toaster />
       </body>
     </html>
   );
