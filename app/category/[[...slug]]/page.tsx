@@ -20,7 +20,7 @@ export default async function Index({
   const kw = (searchParams?.kw as string) ?? "";
   const serviceName: string = decodeURIComponent(params.slug ?? "");
   return (
-    <main className="w-full flex flex-col items-start my-1 space-y-1 h-full grow">
+    <main className="w-full flex flex-col items-start my-1 space-y-1 h-full grow text-sm">
       <CategoryNav active={serviceName} />
       <Suspense fallback={<PinListSkeleton />}>
         <PinList params={{ service: serviceName, kw }} />

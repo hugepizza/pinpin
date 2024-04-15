@@ -21,9 +21,8 @@ export const AuthContextProvider = (props: any) => {
 
   const supabase = createClient();
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUserSession(session);
-      setUser(session?.user ?? null);
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user ?? null);
       setLoading(false);
     });
 

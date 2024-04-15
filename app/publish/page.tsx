@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/client";
+import publish from "../actions/publish";
 
 export default function Publish() {
   const { user, loading } = useUser();
@@ -51,19 +52,10 @@ export default function Publish() {
   }
 
   const onSubmit = async (values: z.infer<typeof publishFormSchema>) => {
-    if (!user) {
-      return;
-    }
-    const supabase = createClient();
     try {
       setRequesting(true);
-      const { data, error } = await supabase
-        .from("pin")
-        .insert([{ ...values, user_id: user.id }]);
-      if (!error) {
-        push("/");
-      }
-      console.error(error);
+      await publish(values);
+      push("/");
     } catch (error) {
       console.error(error);
     } finally {

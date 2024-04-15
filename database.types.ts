@@ -24,24 +24,26 @@ export type Database = {
           title: string
           total_price: number
           total_slot: number
+          user_id: string | null
         }
         Insert: {
-          allow_region: string[]
+          allow_region: string
           created_at?: string
-          description: string
+          description?: string
           id?: number
           occupied_slot: number
           period: string
           region: string
           service: string
-          status: string
+          status?: string
           telegram_link?: string
-          title: string
+          title?: string
           total_price: number
           total_slot: number
+          user_id?: string | null
         }
         Update: {
-          allow_region?: string[]
+          allow_region?: string
           created_at?: string
           description?: string
           id?: number
@@ -54,6 +56,7 @@ export type Database = {
           title?: string
           total_price?: number
           total_slot?: number
+          user_id?: string | null
         }
         Relationships: []
       }
