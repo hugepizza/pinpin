@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { PinPeriod, publishFormSchema } from "@/types";
+import { BuildinServices, PinPeriod, publishFormSchema } from "@/types";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -302,14 +302,11 @@ function ServiceInput({
             <SelectValue placeholder="选择服务" />
           </SelectTrigger>
           <SelectContent className="w-full">
-            <SelectItem value="youtube">YouTube</SelectItem>
-            <SelectItem value="duolingo">Duolingo</SelectItem>
-            <SelectItem value="netflix">Netflix</SelectItem>
-            <SelectItem value="spotify">Spotify</SelectItem>
-            <SelectItem value="chatgpt">ChatGPT</SelectItem>
-            <SelectItem value="telegram">Telegram</SelectItem>
-            <SelectItem value="apple-music">Apple Music</SelectItem>
-            <SelectItem value="apple-one">Apple One</SelectItem>
+            {Object.entries(BuildinServices).map((service) => (
+              <SelectItem key={service[1]} value={service[1]}>
+                {service[0]}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
         <span

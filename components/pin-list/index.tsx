@@ -60,7 +60,7 @@ export async function PinList({
 
 function ListItem(props: { pin: Pin }) {
   return (
-    <div className="relative flex flex-row py-2 space-y-1 justify-between w-full border-b last:border-b-0">
+    <div className="flex flex-row py-2 space-y-1 justify-between w-full border-b last:border-b-0">
       <PinOverview pin={props.pin} />
       <PinStatus pin={props.pin} />
     </div>
@@ -81,24 +81,31 @@ export function PinTitle({
   return (
     <div className="flex flex-row gap-1 items-center justify-start">
       <ServiceLogo service={service} />
-      <Link
-        href={`/pin/${id}`}
+      <p
         className={cn(
           "text-lg hover:text-primary duration-200 ease-in-out",
           className
         )}
       >
         {title}
-      </Link>
+      </p>
     </div>
   );
 }
 
 function PinOverview({ pin }: { pin: Pin }) {
   return (
-    <div>
-      <PinTitle service={pin.service} title={pin.title} id={pin.id} />
-      <RegionInformation allow_region={pin.allow_region} region={pin.region} />
+    <div className="grow">
+      <Link
+        className="flex flex-col hover:cursor-pointer"
+        href={`/pin/${pin.id}`}
+      >
+        <PinTitle service={pin.service} title={pin.title} id={pin.id} />
+        <RegionInformation
+          allow_region={pin.allow_region}
+          region={pin.region}
+        />
+      </Link>
       <PublishInfomation
         author={"test"}
         publishedAt={dayjs(pin.created_at).toDate()}
@@ -186,16 +193,14 @@ export function PublishInfomation({
 
 function PinStatus({ pin }: { pin: Pin }) {
   return (
-    <div className="flex flex-col justify-center relative">
-      <Link href={`/pin/${pin.id}`} className="absolute w-full h-full" />
+    <div className="flex flex-col justify-center grow-0">
       <span>
         {pin.occupied_slot === pin.total_slot ? (
           <span className="text-accent-foreground">已满</span>
         ) : (
-          <a
+          <Link
             className="flex flex-col hover:cursor-pointer"
-            href={pin.telegram_link}
-            target="_blank"
+            href={`/pin/${pin.id}`}
           >
             <div>
               <span className="text-muted-foreground text-sm">拼车中 </span>
@@ -213,7 +218,7 @@ function PinStatus({ pin }: { pin: Pin }) {
                 price={pin.total_price / pin.total_slot}
               />
             </div>
-          </a>
+          </Link>
         )}
       </span>
     </div>
@@ -222,7 +227,7 @@ function PinStatus({ pin }: { pin: Pin }) {
 
 function EmptyServiceList() {
   return (
-    <div className="w-full h-full flex justify-center relative grow">
+    <div className="w-full h-full flex justify-center grow">
       <div className="absolute top-1/4">
         <i className="icon icon-people"></i>
         <p className="text-2xl">暂时没有车队</p>
