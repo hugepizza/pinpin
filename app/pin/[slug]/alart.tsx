@@ -16,19 +16,25 @@ function Alert({ link }: { link: string }) {
       <AlertDialogTrigger>
         <div className="text-primary text-lg font-semibold">
           联系车主上车
-          <span className="icon-[mingcute--telegram-line]"/>
+          <span className="icon-[mingcute--telegram-line]" />
         </div>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>即将打开纸飞机<span className="icon-[mingcute--telegram-line]"/></AlertDialogTitle>
+          <AlertDialogTitle>
+            即将打开纸飞机
+            <span className="icon-[mingcute--telegram-line]" />
+          </AlertDialogTitle>
           <AlertDialogDescription>
             请仔细甄别车辆信息，灵车漂移站长概不负责
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>算了</AlertDialogCancel>
-          <AlertDialogAction onClick={() => window.open(link)}>
+          <AlertDialogAction
+            className="text-background"
+            onClick={() => window.open(link)}
+          >
             前往
           </AlertDialogAction>
         </AlertDialogFooter>

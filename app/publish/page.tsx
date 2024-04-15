@@ -1,7 +1,7 @@
 "use client";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useUser } from "@/providers/auth-context";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Input, InputProps } from "@/components/ui/input";
 import {
   Select,
@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { Pin } from "@/types";
-import { useForm, UseFormReturn, UseFormSetValue } from "react-hook-form";
+import { PinPeriod, publishFormSchema } from "@/types";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
@@ -26,63 +26,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-const formSchema = z
-  .object({
-    title: z
-      .string()
-      .min(1, {
-        message: "标题至少1个字",
-      })
-      .max(100, {
-        message: "标题最多100字",
-      }),
-    total_price: z.coerce
-      .number()
-      .min(1, {
-        message: "什么车怎么便宜？车票至少1元",
-      })
-      .max(10000, {
-        message: "什么车这么贵？最多10000元",
-      }),
-    total_slot: z.coerce
-      .number()
-      .min(1, {
-        message: "没车位发什么车？",
-      })
-      .max(24, {
-        message: "你这是公交车吗？最多24个车位",
-      }),
-    occupied_slot: z.coerce.number().min(0).max(24, {
-      message: "最多24",
-    }),
-    region: z
-      .string()
-      .min(1, {
-        message: "这是哪儿的车？",
-      })
-      .max(50, {
-        message: "最多50字",
-      }),
-    allow_region: z.string().min(0).max(50, {
-      message: "最多50字",
-    }),
-    service: z
-      .string()
-      .min(1, {
-        message: "宁这车往哪儿开？",
-      })
-      .max(20, {
-        message: "最多20字",
-      }),
-  })
-  .refine((data) => data.occupied_slot < data.total_slot, {
-    message: "超载了吧？",
-    path: ["occupied_slot"],
-  });
+import { createClient } from "@/utils/supabase/client";
+
 export default function Publish() {
   const { user, loading } = useUser();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const { push } = useRouter();
+  const [requesting, setRequesting] = useState(false);
+  const form = useForm<z.infer<typeof publishFormSchema>>({
+    resolver: zodResolver(publishFormSchema),
     defaultValues: {
       title: "",
       total_price: 0,
@@ -91,6 +42,7 @@ export default function Publish() {
       region: "",
       allow_region: "",
       service: "",
+      period: PinPeriod.MONTHLY,
     },
   });
   if (loading) return null;
@@ -98,9 +50,26 @@ export default function Publish() {
     return redirect("/login");
   }
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("values", values);
-  }
+  const onSubmit = async (values: z.infer<typeof publishFormSchema>) => {
+    if (!user) {
+      return;
+    }
+    const supabase = createClient();
+    try {
+      setRequesting(true);
+      const { data, error } = await supabase
+        .from("pin")
+        .insert([{ ...values, user_id: user.id }]);
+      if (!error) {
+        push("/");
+      }
+      console.error(error);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setRequesting(false);
+    }
+  };
   return (
     <main className="w-full flex flex-col items-start space-y-2 h-full grow">
       <Form {...form}>
@@ -174,6 +143,34 @@ export default function Publish() {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="period"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>时长</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="选择拼车时长" />
+                    </SelectTrigger>
+                    <SelectContent className="w-full">
+                      <SelectItem value={PinPeriod.MONTHLY}>一个月</SelectItem>
+                      <SelectItem value={PinPeriod.QUARTERLY}>
+                        一季度
+                      </SelectItem>
+                      <SelectItem value={PinPeriod.ANNUALLY}>一年</SelectItem>
+                      <SelectItem value={PinPeriod.PERMANENT}>永久</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <div className="flex flex-row justify-between gap-2">
             <div className="grow">
               <FormField
@@ -228,7 +225,7 @@ export default function Publish() {
           />
 
           <Button
-            className="bg-themeGreen text-primary-foreground rounded-md px-4 py-2  mb-2"
+            className="bg-themeGreen text-background rounded-md px-4 py-2  mb-2"
             type="submit"
           >
             发车
@@ -256,8 +253,8 @@ function AllowRegionInput({
   form,
   props = {},
 }: {
-  form: UseFormReturn<z.infer<typeof formSchema>>;
-  props?: InputProps & Partial<z.infer<typeof formSchema>>;
+  form: UseFormReturn<z.infer<typeof publishFormSchema>>;
+  props?: InputProps & Partial<z.infer<typeof publishFormSchema>>;
 }) {
   const [limit, setLimit] = useState(false);
   return (
@@ -277,8 +274,8 @@ function ServiceInput({
   form,
   props = {},
 }: {
-  form: UseFormReturn<z.infer<typeof formSchema>>;
-  props?: InputProps & Partial<z.infer<typeof formSchema>>;
+  form: UseFormReturn<z.infer<typeof publishFormSchema>>;
+  props?: InputProps & Partial<z.infer<typeof publishFormSchema>>;
 }) {
   const [customService, setCustomService] = useState(false);
   return (
@@ -302,7 +299,7 @@ function ServiceInput({
           }}
         >
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Youtube" />
+            <SelectValue placeholder="选择服务" />
           </SelectTrigger>
           <SelectContent className="w-full">
             <SelectItem value="youtube">YouTube</SelectItem>
@@ -334,7 +331,7 @@ function InputWithIcon({
   props = {},
 }: {
   icon: string;
-  props?: InputProps & Partial<z.infer<typeof formSchema>>;
+  props?: InputProps & Partial<z.infer<typeof publishFormSchema>>;
 }) {
   return (
     <>

@@ -40,6 +40,10 @@ async function Pin({ id }: { id: string }) {
   if (!pin) {
     return notFound();
   }
+  const beglongService = Object.values(BuildinServices).find(
+    (v) => v === pin.service
+  );
+
   return (
     <main className="w-full flex flex-col space-y-1">
       <div className="w-full flex flex-col bg-background shadow-sm rounded-sm px-2 py-2 space-y-1">
@@ -48,11 +52,9 @@ async function Pin({ id }: { id: string }) {
             { title: "Home", route: "/" },
             {
               title: pin.service,
-              route:
-                "/category/" +
-                Object.keys(BuildinServices).findIndex(
-                  (key) => key === pin.service
-                ),
+              route: beglongService
+                ? `/category/${beglongService}`
+                : `/category?kw=${pin.service}`,
             },
           ]}
         />
@@ -121,7 +123,7 @@ async function Pin({ id }: { id: string }) {
                 车票
               </td>
               <td className="border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
-                {(pin.total_slot / pin.total_price).toFixed(2)}元
+                {(pin.total_price / pin.total_slot).toFixed(2)}元
               </td>
             </tr>
           </tbody>
