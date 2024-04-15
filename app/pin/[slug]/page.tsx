@@ -149,15 +149,7 @@ function PinSkeleton() {
   );
 }
 
-export function PinTitle({
-  service,
-  title,
-  id,
-}: {
-  service: string;
-  title: string;
-  id: number;
-}) {
+function PinTitle({ service, title }: { service: string; title: string }) {
   return (
     <div className="flex flex-row gap-1 items-center justify-start">
       <ServiceLogo service={service} />

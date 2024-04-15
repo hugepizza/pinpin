@@ -133,7 +133,7 @@ function RegionInformation({
   allow_region,
 }: {
   region: string;
-  allow_region: string[];
+  allow_region: string;
 }) {
   return (
     <div className="flex flex-row justify-start items-center text-sm space-x-1">
