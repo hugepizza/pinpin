@@ -21,7 +21,7 @@ import { BuildinServices } from "@/types";
 
 export default async function Index({ params }: { params: { slug: string } }) {
   return (
-    <main className="w-full flex flex-col items-start my-2 -mx-2 space-y-2 h-full grow">
+    <main className="w-full flex flex-col items-start my-1 space-y-2 h-full grow">
       <Suspense fallback={<PinSkeleton />}>
         <Pin id={params.slug} />
       </Suspense>

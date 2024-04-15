@@ -1,92 +1,140 @@
 "use client";
-import Link from "next/link";
-import { createClient } from "@/utils/supabase/client";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { SubmitButton } from "./submit-button";
+import { useState } from "react";
+import { createClient } from "@/utils/supabase/client";
+import { cn } from "@/lib/utils";
 
-export default function Login({
-  searchParams,
-}: {
-  searchParams: { message: string };
-}) {
+export default function Login() {
+  const [auth, setAuth] = useState<{ email: string; password: string }>({
+    email: "",
+    password: "",
+  });
+  const [message, setMessage] = useState("");
   const { push } = useRouter();
-  const signIn = (formData: FormData) => {
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const supabase = createClient();
-
-    supabase.auth
-      .signInWithPassword({
-        email,
-        password,
-      })
-      .then(() => {
-        push(`/protected`);
-      })
-      .catch((err) => push("/login?message=Could not authenticate user"));
-  };
-
-  const signUp = (formData: FormData) => {
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const supabase = createClient();
-
-    supabase.auth
-      .signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${origin}/auth/callback`,
-        },
-      })
-      .then(() =>
-        push("/login?message=Check email to continue sign in process")
-      )
-      .catch((err) => push("/login?message=Could not authenticate user"));
-  };
-
+  const supabase = createClient();
+  const [requeting, setRequeting] = useState(false);
   return (
-    <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-2">
-      <form className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground">
-        <label className="text-md" htmlFor="email">
-          Email
-        </label>
-        <input
-          className="rounded-md px-4 py-2 bg-inherit border mb-6"
-          name="email"
-          placeholder="you@example.com"
-          required
-        />
-        <label className="text-md" htmlFor="password">
-          Password
-        </label>
-        <input
-          className="rounded-md px-4 py-2 bg-inherit border mb-6"
-          type="password"
-          name="password"
-          placeholder="••••••••"
-          required
-        />
-        <SubmitButton
-          formAction={signIn}
-          className="bg-primary rounded-md px-4 py-2 text-foreground mb-2"
-          pendingText="Signing In..."
-        >
-          Sign In
-        </SubmitButton>
-        <SubmitButton
-          formAction={signUp}
-          className="border bg-secondary rounded-md px-4 py-2 text-foreground mb-2"
-          pendingText="Signing Up..."
-        >
-          Sign Up
-        </SubmitButton>
-        {searchParams?.message && (
-          <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">
-            {searchParams.message}
-          </p>
-        )}
-      </form>
+    <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md py-24 gap-2 bg-background my-1">
+      <Tabs defaultValue="signin" className="w-full">
+        <TabsList className="w-full">
+          <TabsTrigger value="signin" className="w-full">
+            Sign In
+          </TabsTrigger>
+          {/* <TabsTrigger value="signup" className="w-full">
+            Sign Up
+          </TabsTrigger> */}
+        </TabsList>
+        <TabsContent value="signin">
+          <div className="flex-1 flex flex-col w-full justify-center gap-2 text-foreground">
+            <label className="text-md" htmlFor="email">
+              Email
+            </label>
+            <Input
+              name="email"
+              placeholder="you@example.com"
+              required
+              type="email"
+              onChange={(e) => {
+                setAuth((prev) => ({ ...prev, email: e.target.value }));
+              }}
+            />
+            <label className="text-md" htmlFor="password">
+              Password
+            </label>
+            <Input
+              type="password"
+              name="password"
+              placeholder="••••••••"
+              required
+              onChange={(e) => {
+                setAuth((prev) => ({ ...prev, password: e.target.value }));
+              }}
+            />
+            <Button
+              type="submit"
+              disabled={requeting}
+              className={"bg-primary rounded-md px-4 py-2 text-foreground mb-2"}
+              onClick={() => {
+                setRequeting(true);
+                supabase.auth
+                  .signInWithPassword({
+                    email: auth.email,
+                    password: auth.password,
+                  })
+                  .then((data) => {
+                    if (data.error) {
+                      setMessage(data.error.message);
+                    } else {
+                      push("/");
+                    }
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  })
+                  .finally(() => setRequeting(false));
+              }}
+            >
+              Sign In
+            </Button>
+            <Button
+              type="submit"
+              disabled={requeting}
+              className={
+                "bg-secondary rounded-md px-4 py-2 text-foreground mb-2"
+              }
+              onClick={() => {
+                setRequeting(true);
+                supabase.auth
+                  .signUp({
+                    email: auth.email,
+                    password: auth.password,
+                  })
+                  .then((data) => {
+                    if (data.error) {
+                      setMessage(data.error.message);
+                    }
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  })
+                  .finally(() => setRequeting(false));
+              }}
+            >
+              Sign Up
+            </Button>
+            <div
+              className="rounded-md px-4mb-2 self-end text-muted-foreground underline cursor-pointer"
+              onClick={() => {
+                setRequeting(true);
+                supabase.auth
+                  .resetPasswordForEmail(auth.email)
+                  .then((data) => {
+                    if (data.error) {
+                      setMessage(data.error.message);
+                    } else {
+                      setMessage("check your email index box");
+                    }
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  })
+                  .finally(() => setRequeting(false));
+              }}
+            >
+              Reset Password
+            </div>
+            {message && (
+              <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">
+                {message}
+              </p>
+            )}
+          </div>
+        </TabsContent>
+        <TabsContent value="signup"></TabsContent>
+      </Tabs>
     </div>
   );
 }

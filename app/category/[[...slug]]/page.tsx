@@ -1,9 +1,5 @@
 import { PinList, PinListSkeleton } from "@/components/pin-list";
-import { cn } from "@/lib/utils";
-import { BuildinServices } from "@/types";
-import Link from "next/link";
 import { Suspense } from "react";
-import Loading from "../../loadingx";
 import CategoryNav from "@/components/cate-nav";
 
 export function generateMetadata({ params }: { params: { service: string } }) {
@@ -24,7 +20,7 @@ export default async function Index({
   const kw = (searchParams?.kw as string) ?? "";
   const serviceName: string = decodeURIComponent(params.slug ?? "");
   return (
-    <main className="w-full flex flex-col items-start my-2 -mx-2 space-y-2 h-full grow">
+    <main className="w-full flex flex-col items-start my-1 space-y-1 h-full grow">
       <CategoryNav active={serviceName} />
       <Suspense fallback={<PinListSkeleton />}>
         <PinList params={{ service: serviceName, kw }} />
