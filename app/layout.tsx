@@ -31,7 +31,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={cn(GeistSans.className)}>
-      <body className="bg-primary-foreground text-foreground w-screen min-h-screen overflow-x-hidden flex flex-col">
+      <body className="bg-primary-foreground text-foreground w-screen sm:min-h-screen overflow-x-hidden flex flex-col">
         <AuthContextProvider>
           <Nav />
           <div className="flex flex-col items-center w-full  px-1 sm:px-48 grow">
