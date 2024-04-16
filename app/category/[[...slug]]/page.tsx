@@ -1,8 +1,13 @@
 import { PinList, PinListSkeleton } from "@/components/pin-list";
 import { Suspense } from "react";
 import CategoryNav from "@/components/cate-nav";
+import { Metadata } from "next";
 
-export function generateMetadata({ params }: { params: { service: string } }) {
+export function generateMetadata({
+  params,
+}: {
+  params: { service: string };
+}): Metadata {
   const serviceName: string = decodeURIComponent(params.service);
   return {
     title: `${serviceName} 拼车/合租/共享`,

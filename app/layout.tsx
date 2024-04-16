@@ -18,11 +18,10 @@ export const metadata: Metadata = {
     "探索PinPin，发布拼车/合租/共享YouTube、Netflix、Duolingo等流行服务的订阅，免登录寻找车队，帮你省钱。",
 };
 
-export const viewpoint: Viewport = {
+export const viewport: Viewport = {
   userScalable: false,
   maximumScale: 1,
-  initialScale: 1,
-  width: "device-width",
+  minimumScale: 1,
 };
 
 export default function RootLayout({
