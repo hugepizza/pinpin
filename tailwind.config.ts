@@ -19,9 +19,12 @@ const config = {
       },
     },
     extend: {
+      fontSize: {
+        base: "16px",
+      },
       colors: {
         themeGreen: "hsl(var(--thene-green))",
-        themeRed:"hsl(var(--theme-red))",
+        themeRed: "hsl(var(--theme-red))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
