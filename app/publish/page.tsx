@@ -28,6 +28,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/client";
 import publish from "../actions/publish";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 export default function Publish() {
   const { user, loading } = useUser();
@@ -50,8 +52,9 @@ export default function Publish() {
   if (!user) {
     return redirect("/login");
   }
-
   const onSubmit = async (values: z.infer<typeof publishFormSchema>) => {
+    console.log(values);
+
     try {
       setRequesting(true);
       await publish(values);
@@ -215,6 +218,7 @@ export default function Publish() {
               </FormItem>
             )}
           />
+          <Upload form={form} />
 
           <Button
             className="bg-themeGreen text-background rounded-md px-4 py-2  mb-2"
@@ -331,5 +335,75 @@ function InputWithIcon({
         />
       </div>
     </>
+  );
+}
+
+function Upload({
+  form,
+}: {
+  form: UseFormReturn<z.infer<typeof publishFormSchema>>;
+}) {
+  const uploadImage = async (file: File) => {
+    const supabase = createClient();
+    const ext = file.name.split(".").pop();
+    const randomFileName = `public/${Math.random()
+      .toString(36)
+      .substring(5)}.${ext}`;
+    return await supabase.storage.from("pinpin").upload(randomFileName, file);
+  };
+  const [uploading, setUploading] = useState(false);
+  const [message, setMessage] = useState("");
+  return (
+    <FormField
+      name="allow_region"
+      render={() => (
+        <FormItem>
+          <FormLabel>上传凭证（可选）</FormLabel>
+          <FormControl>
+            <>
+              <Input
+                accept=".jpg, .jpeg, .png"
+                type="file"
+                disabled={uploading}
+                onChange={async (e) => {
+                  if (
+                    !e.currentTarget.files ||
+                    e.currentTarget.files.length === 0
+                  ) {
+                    return;
+                  }
+                  const file = e.currentTarget.files[0];
+                  try {
+                    setUploading(true);
+                    if (file.size > 1024 * 1024 * 0.2) {
+                      e.currentTarget.value = "";
+                      throw new Error("图片大小不能超过2MB");
+                    }
+                    const f = await uploadImage(file);
+                    if (f.error) {
+                      throw new Error(f.error.message);
+                    }
+                    form.setValue("images", [f.data.path]);
+                    setMessage("");
+                  } catch (e: any) {
+                    setMessage(e.message || "上传失败");
+                  } finally {
+                    setUploading(false);
+                  }
+                }}
+              />
+              {message && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Error</AlertTitle>
+                  <AlertDescription>{message}</AlertDescription>
+                </Alert>
+              )}
+            </>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 }

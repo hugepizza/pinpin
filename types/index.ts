@@ -65,6 +65,7 @@ export const publishFormSchema = z
     allow_region: z.string().min(0).max(50, {
       message: "最多50字",
     }),
+    images: z.array(z.string()),
     period: z.nativeEnum(PinPeriod),
     service: z
       .string()

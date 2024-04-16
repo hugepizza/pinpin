@@ -15,6 +15,7 @@ export type Database = {
           created_at: string
           description: string
           id: number
+          images: string[]
           occupied_slot: number
           period: string
           region: string
@@ -31,6 +32,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: number
+          images?: string[]
           occupied_slot: number
           period: string
           region: string
@@ -47,6 +49,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: number
+          images?: string[]
           occupied_slot?: number
           period?: string
           region?: string

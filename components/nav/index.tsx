@@ -18,7 +18,7 @@ function Nav() {
             className="text-3xl font-bold bg-gradient-to-br to-primary from-secondary bg-clip-text text-transparent"
             href={"/"}
           >
-            PinPin
+            拼拼
           </Link>{" "}
           <Search />
         </div>

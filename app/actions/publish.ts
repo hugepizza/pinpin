@@ -11,8 +11,6 @@ const publish = async (values: z.infer<typeof publishFormSchema>) => {
     return;
   }
 
-  console.log(123);
-
   const { error } = await supabase
     .from("pin")
     .insert([{ ...values, user_id: auth.data.user.id }]);

@@ -5,6 +5,15 @@ import { createClient } from "@/utils/supabase/server";
 import { Skeleton } from "../ui/skeleton";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export function PinListSkeleton() {
   return (
@@ -29,11 +38,16 @@ export function PinListSkeleton() {
 export async function PinList({
   params,
 }: {
-  params: { service: string; kw: string };
+  params: { service: string; kw: string; page: number };
 }) {
+  const pageSize = 10;
   const fetch = async ({ service, kw }: { service: string; kw: string }) => {
     const supabase = createClient();
-    const sql = supabase.from("pin").select("*", { count: "exact" });
+    const offsetPage = params.page - 1 < 0 ? 0 : params.page - 1;
+    const sql = supabase
+      .from("pin")
+      .select("*", { count: "exact" })
+      .range(offsetPage * pageSize, offsetPage * pageSize + pageSize - 1);
     if (service) {
       sql.eq("service", service);
     } else {
@@ -54,6 +68,39 @@ export async function PinList({
       {pin.map((pin) => (
         <ListItem pin={pin} key={pin.id} />
       ))}
+      <Pagination>
+        <PaginationContent className="grid grid-cols-2">
+          <PaginationItem className="grid-cols-1">
+            {params.page > 1 ? (
+              <PaginationPrevious
+                href={`/category/${params.service}?kw=${params.kw}&page=${
+                  params.page - 1
+                }`}
+              />
+            ) : (
+              <PaginationPrevious
+                href={`#`}
+                className="text-muted pointer-events-none hover:cursor-not-allowed"
+              />
+            )}
+          </PaginationItem>
+
+          <PaginationItem className="grid-cols-1">
+            {pin.length < pageSize ? (
+              <PaginationNext
+                href={`#`}
+                className="text-muted pointer-events-none hover:cursor-not-allowed"
+              />
+            ) : (
+              <PaginationNext
+                href={`/category/${params.service}?kw=${params.kw}&page=${
+                  params.page + 1
+                }`}
+              />
+            )}
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }

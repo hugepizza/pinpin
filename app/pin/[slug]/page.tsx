@@ -19,6 +19,32 @@ import { Suspense } from "react";
 import Alert from "./alart";
 import { BuildinServices } from "@/types";
 
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const supabase = createClient();
+  const { data: pin } = await supabase
+    .from("pin")
+    .select("*")
+    .eq("id", params.slug)
+    .limit(1)
+    .single();
+  if (pin) {
+    return {
+      title: `${pin.title} | ${pin.service} | 拼车/合租/共享`,
+      description: `${pin.description ?? pin?.title} | ${
+        pin.service
+      } 拼车/合租/共享, 发车找车`,
+    };
+  }
+  return {
+    title: "YouTube/Netflix/Spotify等平台 | 拼车/合租/共享",
+    description: "YouTube/Netflix/Spotify等平台 拼车/合租/共享, 发车找车",
+  };
+}
+
 export default async function Index({ params }: { params: { slug: string } }) {
   return (
     <main className="w-full flex flex-col items-start my-1 space-y-2 h-full grow">
@@ -40,6 +66,8 @@ async function Pin({ id }: { id: string }) {
   if (!pin) {
     return notFound();
   }
+  console.log(pin);
+
   const beglongService = Object.values(BuildinServices).find(
     (v) => v === pin.service
   );
@@ -65,13 +93,21 @@ async function Pin({ id }: { id: string }) {
         />
         <hr className="hr" />
         <div className="p-1">{pin.description}</div>
-        <ImageView
-          images={[
-            "https://loremflickr.com/640/480?lock=5268937814048768",
-            "https://loremflickr.com/640/480?lock=6311192440078336",
-            "https://deothemes.com/envato/zenna/html/img/shop/shop_item_back_3.jpg",
-          ]}
-        />
+        {pin.images.length > 0 ? (
+          <ImageView
+            images={pin.images.map((img) => {
+              console.log(
+                `https://jxiyalqtocywlkrriwcq.supabase.co/storage/v1/object/public/pinpin/${img}`
+              );
+
+              return `https://jxiyalqtocywlkrriwcq.supabase.co/storage/v1/object/public/pinpin/${img}`;
+            })}
+          />
+        ) : (
+          <span className="text-sm text-muted-foreground">
+            车主没有上传凭证
+          </span>
+        )}
       </div>
       <div className="w-full flex flex-col bg-background shadow-sm rounded-sm px-2 py-2 space-y-1">
         <table className="w-full">
