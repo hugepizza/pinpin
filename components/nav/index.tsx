@@ -11,14 +11,14 @@ function Nav() {
   const supabase = createClient();
 
   return (
-    <nav className="bg-background top-0 left-0 w-screen min-h-[6vh] sticky shadow-md px-2 sm:px-48 items-center flex z-100">
+    <nav className="bg-background top-0 left-0 w-screen min-h-[6vh] shadow-md px-2 sm:px-48 items-center flex z-100">
       <div className="flex flex-row w-full justify-between items-center h-full">
         <div className="flex flex-row items-center h-full gap-2">
           <Link
             className="text-3xl font-bold bg-gradient-to-br to-primary from-secondary bg-clip-text text-transparent"
             href={"/"}
           >
-            LOGO
+            PinPin
           </Link>{" "}
           <Search />
         </div>
