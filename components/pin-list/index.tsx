@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { createClient } from "@/utils/supabase/server";
 import { Skeleton } from "../ui/skeleton";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, formatTimeAgo } from "@/lib/utils";
 import {
   Pagination,
   PaginationContent,
@@ -107,7 +107,8 @@ export async function PinList({
 
 function ListItem(props: { pin: Pin }) {
   return (
-    <div className="flex flex-row py-2 space-y-1 justify-between w-full border-b last:border-b-0">
+    <div className="flex flex-row py-1 space-y-1 space-x-2 justify-between w-full border-b last:border-b-0">
+      <ServiceLogo service={props.pin.service} />
       <PinOverview pin={props.pin} />
       <PinStatus pin={props.pin} />
     </div>
@@ -126,13 +127,9 @@ export function PinTitle({
   className?: string;
 }) {
   return (
-    <div className="flex flex-row gap-1 items-center justify-start">
-      <ServiceLogo service={service} />
+    <div className="flex flex-row gap-1 items-center justify-start text-base">
       <p
-        className={cn(
-          "text-lg hover:text-primary duration-200 ease-in-out",
-          className
-        )}
+        className={cn("hover:text-primary duration-200 ease-in-out", className)}
       >
         {title}
       </p>
@@ -142,18 +139,16 @@ export function PinTitle({
 
 function PinOverview({ pin }: { pin: Pin }) {
   return (
-    <div className="grow">
+    <div className="grow flex flex-col justify-between">
       <Link
         className="flex flex-col hover:cursor-pointer"
         href={`/pin/${pin.id}`}
       >
         <PinTitle service={pin.service} title={pin.title} id={pin.id} />
-        <RegionInformation
-          allow_region={pin.allow_region}
-          region={pin.region}
-        />
       </Link>
-      <PublishInfomation
+      <RegionInformation
+        allow_region={pin.allow_region}
+        region={pin.region}
         author={"test"}
         publishedAt={dayjs(pin.created_at).toDate()}
       />
@@ -183,15 +178,26 @@ function PriceWithPeriod({
 }
 
 function RegionInformation({
+  author,
+  publishedAt,
   region,
   allow_region,
 }: {
   region: string;
   allow_region: string;
+  author: string;
+  publishedAt: Date;
 }) {
   return (
-    <div className="flex flex-row justify-start items-center text-sm space-x-1">
-      <span>{region}区</span>
+    <div className="flex flex-row justify-start items-center text-xs text-muted-foreground">
+      <a href="" className="font-medium text-foreground">
+        {author}
+      </a>
+      &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+      <span>{formatTimeAgo(publishedAt)}</span>
+      &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+      <span>{region}</span>
+      &nbsp;&nbsp;&bull;&nbsp;&nbsp;
       <span>{allow_region.length === 0 ? "不限节点" : `限定节点`}</span>
     </div>
   );
@@ -250,13 +256,11 @@ function PinStatus({ pin }: { pin: Pin }) {
             href={`/pin/${pin.id}`}
           >
             <div>
-              <span className="text-muted-foreground text-sm">拼车中 </span>
+              <span className="text-muted-foreground text-xs">拼车中 </span>
               <span>
-                <span className="text-secondary text-2xl">
-                  {pin.occupied_slot}
-                </span>
+                <span className="text-secondary">{pin.occupied_slot}</span>
                 <span className="text-muted-foreground">/</span>
-                <span className="text-primary text-xl">{pin.total_slot}</span>
+                <span className="text-primary">{pin.total_slot}</span>
               </span>
             </div>
             <div className="flex flex-row">

@@ -7,7 +7,7 @@ export const BuildinServices: Record<string, string> = {
   Netflix: "netflix",
   Spotify: "spotify",
   ChatGPT: "chatgpt",
-  "Apple Music": "apple-music",
+  Apple: "apple",
   任天堂: "nintento",
 };
 export enum PinPeriod {
