@@ -26,7 +26,7 @@ function Alert({ link }: { link: string }) {
             <span className="icon-[mingcute--telegram-line]" />
           </AlertDialogTitle>
           <AlertDialogDescription>
-            请仔细甄别车辆信息，本站不负责售后
+            请仔细甄别拼车信息，本站不负责售后
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

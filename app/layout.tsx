@@ -12,10 +12,10 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  applicationName: "PinPin",
+  applicationName: "一起拼车",
   title: "Youtube,Netflix,Spotify,Duolingo拼车合租共享 | 发车找车",
   description:
-    "探索PinPin，发布拼车/合租/共享YouTube、Netflix、Duolingo等流行服务的订阅，免登录寻找车队，帮你省钱。",
+    "一起拼车，发布拼车/合租/共享YouTube、Netflix、Duolingo等流行服务的订阅，免登录寻找车队，帮你省钱。",
 };
 
 export const viewport: Viewport = {

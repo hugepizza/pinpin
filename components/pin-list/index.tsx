@@ -153,7 +153,7 @@ export function PinTitle({
   return (
     <div className="flex flex-row gap-1 items-center justify-start text-base">
       <p
-        className={cn("hover:text-primary duration-200 ease-in-out", className)}
+        className={cn("hover:text-primary duration-200 ease-in-out line-clamp-1", className)}
       >
         {title}
       </p>
@@ -223,11 +223,11 @@ function RegionInformation({
       >
         {author}
       </Link>
-      &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+      &nbsp;&bull;&nbsp;
       <span>{formatTimeAgo(publishedAt)}</span>
-      &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+      &nbsp;&bull;&nbsp;
       <span>{region}</span>
-      &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+      &nbsp;&bull;&nbsp;
       <span>{allow_region.length === 0 ? "不限节点" : `限定节点`}</span>
     </div>
   );
@@ -278,7 +278,7 @@ export function PublishInfomation({
 
 function PinStatus({ pin }: { pin: Pin }) {
   return (
-    <div className="flex flex-col justify-center grow-0">
+    <div className="flex flex-col justify-center items-end grow-0 min-w-[24%]">
       <span>
         {pin.occupied_slot === pin.total_slot ? (
           <span className="text-accent-foreground">已满</span>

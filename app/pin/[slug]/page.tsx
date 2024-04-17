@@ -180,7 +180,9 @@ async function Pin({ id }: { id: string }) {
         <div>
           <div>
             <div className="h-2" />
-            <Alert link={"https://" + pin.telegram_link} />
+            {pin.occupied_slot < pin.total_slot && (
+              <Alert link={"https://" + pin.telegram_link} />
+            )}
             <div className="h-12" />
             {/* <div className="text-secondary">遇到灵车？</div> */}
           </div>
