@@ -8,9 +8,7 @@ import { cn, formatTimeAgo } from "@/lib/utils";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
-  PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
@@ -38,28 +36,46 @@ export function PinListSkeleton() {
 export async function PinList({
   params,
 }: {
-  params: { service: string; kw: string; page: number };
+  params: { service?: string; kw?: string; page: number; userId?: string };
 }) {
   const pageSize = 10;
-  const fetch = async ({ service, kw }: { service: string; kw: string }) => {
+  const fetch = async ({ service, kw, page, userId }: typeof params) => {
     const supabase = createClient();
-    const offsetPage = params.page - 1 < 0 ? 0 : params.page - 1;
+    const offsetPage = page - 1 < 0 ? 0 : page - 1;
     const sql = supabase
       .from("pin")
       .select("*", { count: "exact" })
-      .range(offsetPage * pageSize, offsetPage * pageSize + pageSize - 1);
-    if (service) {
-      sql.eq("service", service);
+      .range(offsetPage * pageSize, offsetPage * pageSize + pageSize - 1)
+      .order("created_at", {
+        ascending: false,
+      });
+    if (userId) {
+      sql.eq("user_id", userId);
     } else {
-      if (kw) {
-        sql.or(`service.like.%${kw}%,title.like.%${kw}%`);
+      if (service) {
+        sql.eq("service", service);
+      } else {
+        if (kw) {
+          sql.or(`service.like.%${kw}%,title.like.%${kw}%`);
+        }
       }
     }
 
-    return await sql;
+    const { data: pin } = await sql;
+    if (pin) {
+      const userIds = pin.map((p) => p.user_id);
+      const users = await supabase
+        .from("profiles")
+        .select("*")
+        .in("id", userIds);
+      return pin.map((p) => ({
+        ...p,
+        nickname: users.data?.find((d) => p.user_id === d.id)?.nickname || "",
+      }));
+    }
+    return [];
   };
-  const { data: pin } = await fetch(params);
-
+  const pin = await fetch(params);
   if (pin === null || pin.length === 0) {
     return <EmptyServiceList />;
   }
@@ -73,9 +89,13 @@ export async function PinList({
           <PaginationItem className="grid-cols-1">
             {params.page > 1 ? (
               <PaginationPrevious
-                href={`/category/${params.service}?kw=${params.kw}&page=${
-                  params.page - 1
-                }`}
+                href={
+                  params.userId
+                    ? `/me?page=${params.page - 1}`
+                    : `/category/${params.service}?kw=${params.kw}&page=${
+                        params.page - 1
+                      }`
+                }
               />
             ) : (
               <PaginationPrevious
@@ -93,9 +113,13 @@ export async function PinList({
               />
             ) : (
               <PaginationNext
-                href={`/category/${params.service}?kw=${params.kw}&page=${
-                  params.page + 1
-                }`}
+                href={
+                  params.userId
+                    ? `/me?page=${params.page + 1}`
+                    : `/category/${params.service}?kw=${params.kw}&page=${
+                        params.page + 1
+                      }`
+                }
               />
             )}
           </PaginationItem>
@@ -149,7 +173,8 @@ function PinOverview({ pin }: { pin: Pin }) {
       <RegionInformation
         allow_region={pin.allow_region}
         region={pin.region}
-        author={"test"}
+        author={pin.nickname}
+        authorId={pin.user_id!}
         publishedAt={dayjs(pin.created_at).toDate()}
       />
     </div>
@@ -171,7 +196,7 @@ function PriceWithPeriod({
         : period === PinPeriod.MONTHLY
         ? "月"
         : period === PinPeriod.QUARTERLY
-        ? "季度"
+        ? "季"
         : "年"}
     </div>
   );
@@ -179,6 +204,7 @@ function PriceWithPeriod({
 
 function RegionInformation({
   author,
+  authorId,
   publishedAt,
   region,
   allow_region,
@@ -186,13 +212,17 @@ function RegionInformation({
   region: string;
   allow_region: string;
   author: string;
+  authorId: string;
   publishedAt: Date;
 }) {
   return (
     <div className="flex flex-row justify-start items-center text-xs text-muted-foreground">
-      <a href="" className="font-medium text-foreground">
+      <Link
+        href={`/driver/${authorId}`}
+        className="font-medium text-foreground"
+      >
         {author}
-      </a>
+      </Link>
       &nbsp;&nbsp;&bull;&nbsp;&nbsp;
       <span>{formatTimeAgo(publishedAt)}</span>
       &nbsp;&nbsp;&bull;&nbsp;&nbsp;

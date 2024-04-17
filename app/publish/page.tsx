@@ -93,7 +93,7 @@ export default function Publish() {
             name="service"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>服务</FormLabel>
+                <FormLabel>车型</FormLabel>
                 <FormControl>
                   <ServiceInput props={{ ...field }} form={form} />
                 </FormControl>
@@ -218,6 +218,22 @@ export default function Publish() {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="telegram_link"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Telegram链接</FormLabel>
+                <FormControl>
+                  <InputWithIcon
+                    props={{ ...field, placeholder: "t.me/" }}
+                    icon="icon-[line-md--telegram]"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <Upload form={form} />
 
           <Button
@@ -285,7 +301,7 @@ function ServiceInput({
             setCustomService(false);
           }}
         >
-          返回选择服务
+          返回选择车型
         </span>
       </div>
       <div className={`w-full ${customService ? "hidden" : ""}`}>
@@ -295,7 +311,7 @@ function ServiceInput({
           }}
         >
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="选择服务" />
+            <SelectValue placeholder="选择车型" />
           </SelectTrigger>
           <SelectContent className="w-full">
             {Object.entries(BuildinServices).map((service) => (
@@ -312,7 +328,7 @@ function ServiceInput({
             setCustomService(true);
           }}
         >
-          不在这里? 自定义服务
+          不在这里? 自定义车型
         </span>
       </div>
     </div>
@@ -375,7 +391,7 @@ function Upload({
                   const file = e.currentTarget.files[0];
                   try {
                     setUploading(true);
-                    if (file.size > 1024 * 1024 * 0.2) {
+                    if (file.size > 1024 * 1024 * 2) {
                       e.currentTarget.value = "";
                       throw new Error("图片大小不能超过2MB");
                     }

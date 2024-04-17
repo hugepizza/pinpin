@@ -23,7 +23,9 @@ enum PinStatus {
   CLOSED = "closed",
 }
 
-export type Pin = Database["public"]["Tables"]["pin"]["Row"];
+export type Pin = Database["public"]["Tables"]["pin"]["Row"] & {
+  nickname: string;
+};
 
 export const publishFormSchema = z
   .object({
@@ -59,13 +61,13 @@ export const publishFormSchema = z
       .min(1, {
         message: "这是哪儿的车？",
       })
-      .max(50, {
-        message: "最多50字",
+      .max(8, {
+        message: "最多8个字",
       }),
     allow_region: z.string().min(0).max(50, {
       message: "最多50字",
     }),
-    images: z.array(z.string()),
+    images: z.array(z.string()).default([]),
     period: z.nativeEnum(PinPeriod),
     service: z
       .string()
@@ -75,6 +77,7 @@ export const publishFormSchema = z
       .max(20, {
         message: "最多20字",
       }),
+    telegram_link: z.string().startsWith("t.me/"),
   })
   .refine((data) => data.occupied_slot < data.total_slot, {
     message: "超载了吧？",

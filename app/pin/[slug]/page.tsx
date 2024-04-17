@@ -166,9 +166,9 @@ async function Pin({ id }: { id: string }) {
         </table>
         <div>
           <div className="h-2" />
-          <Alert link={pin.telegram_link} />
+          <Alert link={"https://" + pin.telegram_link} />
           <div className="h-12" />
-          <div className="text-secondary">遇到灵车？</div>
+          {/* <div className="text-secondary">遇到灵车？</div> */}
         </div>
       </div>
     </main>
