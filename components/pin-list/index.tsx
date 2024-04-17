@@ -1,4 +1,4 @@
-import { Pin, PinPeriod } from "@/types";
+import { BuildinServices, Pin, PinPeriod } from "@/types";
 import ServiceLogo from "../logo";
 import dayjs from "dayjs";
 import { createClient } from "@/utils/supabase/server";
@@ -150,11 +150,20 @@ export function PinTitle({
   id: number;
   className?: string;
 }) {
+  const buildin = Object.values(BuildinServices).includes(service);
   return (
     <div className="flex flex-row gap-1 items-center justify-start text-base">
       <p
-        className={cn("hover:text-primary duration-200 ease-in-out line-clamp-1", className)}
+        className={cn(
+          "hover:text-primary duration-200 ease-in-out line-clamp-1",
+          className
+        )}
       >
+        {!buildin && (
+          <Link className="text-primary" href={"/?kw=" + service}>
+            #{service}{" "}
+          </Link>
+        )}
         {title}
       </p>
     </div>

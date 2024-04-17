@@ -7,6 +7,7 @@ import chatgptIcon from "./svgs/chatgpt.svg";
 import nintendoIcon from "./svgs/nintendo.svg";
 import appleIcon from "./svgs/apple.svg";
 import { BuildinServices } from "@/types";
+import { cn } from "@/lib/utils";
 function ServiceLogo({ service }: { service: string }) {
   switch (service.toLowerCase()) {
     case "youtube":
@@ -25,10 +26,19 @@ function ServiceLogo({ service }: { service: string }) {
       return <Image className="inline" src={appleIcon} alt="telegram" />;
     default:
       return (
-        <div className="flex justify-center items-center w-[2em]">
-          <span className="px-[0.04rem] py-[0.04rem] text-background bg-primary text-xs rounded-sm text-center overflow-hidden overflow-ellipsis whitespace-nowrap">
-            {service}
-          </span>
+        <div
+          className={cn("flex justify-center items-center self-center size-8")}
+        >
+          <div
+            className={cn(
+              "flex justify-center items-center text-background text-xl align-middle w-full h-full rounded-full",
+              service[0].toUpperCase().charCodeAt(0) % 2 === 0
+                ? "bg-secondary"
+                : "bg-primary"
+            )}
+          >
+            {<div>{service[0].toUpperCase()}</div>}
+          </div>
         </div>
       );
   }
