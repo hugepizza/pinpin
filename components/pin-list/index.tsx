@@ -160,11 +160,16 @@ export function PinTitle({
         )}
       >
         {!buildin && (
-          <Link className="text-primary" href={"/?kw=" + service}>
+          <Link className="text-primary inline" href={"/?kw=" + service}>
             #{service}{" "}
           </Link>
         )}
-        {title}
+        <Link
+          className="flex-col hover:cursor-pointer inline"
+          href={`/pin/${id}`}
+        >
+          {title}
+        </Link>
       </p>
     </div>
   );
@@ -173,12 +178,8 @@ export function PinTitle({
 function PinOverview({ pin }: { pin: Pin }) {
   return (
     <div className="grow flex flex-col justify-between">
-      <Link
-        className="flex flex-col hover:cursor-pointer"
-        href={`/pin/${pin.id}`}
-      >
-        <PinTitle service={pin.service} title={pin.title} id={pin.id} />
-      </Link>
+      <PinTitle service={pin.service} title={pin.title} id={pin.id} />
+
       <RegionInformation
         allow_region={pin.allow_region}
         region={pin.region}
