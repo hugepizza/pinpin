@@ -7,7 +7,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,6 +17,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import Alert from "./alart";
 import { BuildinServices } from "@/types";
+import Modal from "./modal";
 
 export async function generateMetadata({
   params,
@@ -66,6 +66,18 @@ async function Pin({ id }: { id: string }) {
   if (!pin) {
     return notFound();
   }
+  const user = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", pin.user_id!)
+    .limit(1)
+    .single();
+  if (!user.data) {
+    return notFound();
+  }
+
+  const visitor = await supabase.auth.getUser();
+  const isOwner = visitor?.data.user?.id === pin.user_id;
   console.log(pin);
 
   const beglongService = Object.values(BuildinServices).find(
@@ -88,7 +100,8 @@ async function Pin({ id }: { id: string }) {
         />
         <PinTitle {...pin} />
         <PublishInfomation
-          author={"xx"}
+          author={user.data.nickname}
+          authorId={user.data.id}
           publishedAt={dayjs(pin.created_at).toDate()}
         />
         <hr className="hr" />
@@ -165,10 +178,19 @@ async function Pin({ id }: { id: string }) {
           </tbody>
         </table>
         <div>
-          <div className="h-2" />
-          <Alert link={"https://" + pin.telegram_link} />
-          <div className="h-12" />
-          {/* <div className="text-secondary">遇到灵车？</div> */}
+          <div>
+            <div className="h-2" />
+            <Alert link={"https://" + pin.telegram_link} />
+            <div className="h-12" />
+            {/* <div className="text-secondary">遇到灵车？</div> */}
+          </div>
+          {isOwner && (
+            <Modal
+              pinId={pin.id}
+              occupied={pin.occupied_slot}
+              total={pin.total_slot}
+            />
+          )}
         </div>
       </div>
     </main>

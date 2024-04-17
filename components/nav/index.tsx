@@ -15,10 +15,10 @@ function Nav() {
       <div className="flex flex-row w-full justify-between items-center h-full">
         <div className="flex flex-row items-center h-full gap-2">
           <Link
-            className="text-3xl font-bold bg-gradient-to-br to-primary from-secondary bg-clip-text text-transparent"
+            className="text-3xl font-bold italic"
             href={"/"}
           >
-            拼拼
+            拼车
           </Link>{" "}
           <Search />
         </div>

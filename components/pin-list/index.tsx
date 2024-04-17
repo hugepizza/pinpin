@@ -235,10 +235,12 @@ function RegionInformation({
 
 export function PublishInfomation({
   author,
+  authorId,
   publishedAt,
   className = "",
 }: {
   author: string;
+  authorId: string;
   publishedAt: Date;
   className?: string;
 }) {
@@ -263,9 +265,9 @@ export function PublishInfomation({
   };
   return (
     <div className={cn("text-sm space-x-1", className)}>
-      <a href="" className="font-medium">
+      <Link href={`/driver/${authorId}`} className="font-medium">
         {author}
-      </a>
+      </Link>
       <span className="text-xs text-muted-foreground">发布于</span>
       <span className="text-xs text-muted-foreground">
         {formatTimeAgo(publishedAt)}
