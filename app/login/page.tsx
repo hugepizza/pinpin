@@ -95,6 +95,8 @@ export default function Login() {
                   .then((data) => {
                     if (data.error) {
                       setMessage(data.error.message);
+                    } else {
+                      setMessage("check your email index box");
                     }
                   })
                   .catch((err) => {

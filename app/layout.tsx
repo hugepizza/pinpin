@@ -11,6 +11,7 @@ const defaultUrl = process.env.VERCEL_URL
   : "http://localhost:3000";
 
 export const metadata: Metadata = {
+  icons: "/public/favicon.svg",
   metadataBase: new URL(defaultUrl),
   applicationName: "一起拼车",
   title: "Youtube,Netflix,Spotify,Duolingo拼车合租共享 | 发车找车",
