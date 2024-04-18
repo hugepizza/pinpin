@@ -30,6 +30,7 @@ import { createClient } from "@/utils/supabase/client";
 import publish from "../actions/publish";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function Publish() {
   const { user, loading } = useUser();
@@ -83,6 +84,19 @@ export default function Publish() {
                     icon="icon-[material-symbols--title]"
                     props={{ ...field }}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>说明</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="有什么需要说明的吗？" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -234,11 +248,16 @@ export default function Publish() {
               </FormItem>
             )}
           />
-          <Upload form={form} />
+          <Upload
+            form={form}
+            setUploading={setRequesting}
+            uploading={requesting}
+          />
 
           <Button
             className="bg-themeGreen text-background rounded-md px-4 py-2  mb-2"
             type="submit"
+            disabled={requesting}
           >
             发车
           </Button>
@@ -356,8 +375,12 @@ function InputWithIcon({
 
 function Upload({
   form,
+  uploading,
+  setUploading,
 }: {
   form: UseFormReturn<z.infer<typeof publishFormSchema>>;
+  uploading: boolean;
+  setUploading: (state: boolean) => void;
 }) {
   const uploadImage = async (file: File) => {
     const supabase = createClient();
@@ -367,7 +390,6 @@ function Upload({
       .substring(5)}.${ext}`;
     return await supabase.storage.from("pinpin").upload(randomFileName, file);
   };
-  const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
   return (
     <FormField

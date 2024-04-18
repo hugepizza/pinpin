@@ -37,6 +37,9 @@ export const publishFormSchema = z
       .max(100, {
         message: "标题最多100字",
       }),
+    description: z.string().max(200, {
+      message: "标题最多200字",
+    }),
     total_price: z.coerce
       .number()
       .min(1, {

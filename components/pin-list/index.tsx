@@ -155,7 +155,7 @@ export function PinTitle({
     <div className="flex flex-row gap-1 items-center justify-start text-base">
       <p
         className={cn(
-          "hover:text-primary duration-200 ease-in-out line-clamp-1",
+          "hover:text-primary duration-200 ease-in-out line-clamp-2",
           className
         )}
       >
@@ -237,8 +237,10 @@ function RegionInformation({
       <span>{formatTimeAgo(publishedAt)}</span>
       &nbsp;&bull;&nbsp;
       <span>{region}</span>
-      &nbsp;&bull;&nbsp;
-      <span>{allow_region.length === 0 ? "不限节点" : `限定节点`}</span>
+      <span className="hidden sm:inline">
+        &nbsp;&bull;&nbsp;
+        <span>{allow_region.length === 0 ? "不限节点" : `限定节点`}</span>
+      </span>
     </div>
   );
 }
