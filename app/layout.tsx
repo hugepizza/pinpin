@@ -5,6 +5,7 @@ import { AuthContextProvider } from "@/providers/auth-context";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/react";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -33,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn(GeistSans.className)}>
       <body className="bg-primary-foreground text-foreground w-screen sm:min-h-screen overflow-x-hidden flex flex-col">
+        <Analytics />
         <AuthContextProvider>
           <Nav />
           <div className="flex flex-col items-center w-full  px-1 sm:px-48 grow">
