@@ -1,4 +1,3 @@
-import CategoryNav from "@/components/cate-nav";
 import ImageView from "@/components/image-view";
 import ServiceLogo from "@/components/logo";
 import { PublishInfomation } from "@/components/pin-list";
@@ -16,7 +15,6 @@ import dayjs from "dayjs";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import Alert from "./alart";
-import { BuildinServices } from "@/types";
 import Modal from "./modal";
 
 export async function generateMetadata({

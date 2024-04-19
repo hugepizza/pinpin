@@ -1,5 +1,5 @@
 "use client";
-import updateOccupied from "@/app/actions/updateOccupied";
+import updateOccupied from "@/app/actions/update-occupied";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
