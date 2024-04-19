@@ -27,7 +27,7 @@ export default async function Index({
   );
 }
 
-export function ProfileSkeleton() {
+function ProfileSkeleton() {
   return (
     <div className="flex flex-row w-full justify-end">
       <div className="w-1/5 flex flex-col space-y-1 items-end">
