@@ -33,7 +33,7 @@ function ImageView({ images }: { images: string[] }) {
     };
 
     loadAllImages();
-  });
+  }, [images]);
   return (
     <div className="text-primary flex flex-row">
       <Gallery options={{ showHideOpacity: true }}>
