@@ -2,7 +2,6 @@ import { PinList, PinListSkeleton } from "@/components/pin-list";
 import { Skeleton } from "@/components/ui/skeleton";
 import { createClient } from "@/utils/supabase/server";
 import dayjs from "dayjs";
-import { create } from "domain";
 import { Suspense } from "react";
 
 export default async function Index({

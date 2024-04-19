@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { createClient } from "@/utils/supabase/server";
 import { Skeleton } from "../ui/skeleton";
 import Link from "next/link";
-import { cn, formatTimeAgo } from "@/lib/utils";
+import { cn, formatTimeAgo, formatCustomizedService } from "@/lib/utils";
 import {
   Pagination,
   PaginationContent,
@@ -150,19 +150,17 @@ export function PinTitle({
   const buildin = Object.values(BuildinServices).includes(service);
   return (
     <div className="flex flex-row gap-1 items-center justify-start text-base">
-      <p
-        className={cn(
-          "hover:text-primary duration-200 ease-in-out line-clamp-2",
-          className
-        )}
-      >
+      <p className={cn("line-clamp-2", className)}>
         {!buildin && (
-          <Link className="text-primary inline" href={"/?kw=" + service}>
+          <Link
+            className="text-primary inline"
+            href={"/category/" + formatCustomizedService(service)}
+          >
             #{service}{" "}
           </Link>
         )}
         <Link
-          className="flex-col hover:cursor-pointer inline"
+          className="flex-col hover:cursor-pointer hover:text-primary duration-200 ease-in-out inline"
           href={`/pin/${id}`}
         >
           {title}

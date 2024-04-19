@@ -1,10 +1,9 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
-
 
 export const formatTimeAgo = (date: Date): string => {
   const now = new Date();
@@ -24,4 +23,8 @@ export const formatTimeAgo = (date: Date): string => {
   } else {
     return "1分钟内";
   }
+};
+
+export const formatCustomizedService = (input: string) => {
+  return input.toLocaleLowerCase().replace(/\s+/g, "-");
 };

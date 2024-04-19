@@ -1,5 +1,6 @@
 "use server";
 
+import { formatCustomizedService } from "@/lib/utils";
 import { publishFormSchema } from "@/types";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
@@ -12,9 +13,13 @@ const publish = async (values: z.infer<typeof publishFormSchema>) => {
     return;
   }
 
-  const { error } = await supabase
-    .from("pin")
-    .insert([{ ...values, user_id: auth.data.user.id }]);
+  const { error } = await supabase.from("pin").insert([
+    {
+      ...values,
+      service: formatCustomizedService(values.service),
+      user_id: auth.data.user.id,
+    },
+  ]);
 
   revalidatePath(`/pin`);
   if (error) {
