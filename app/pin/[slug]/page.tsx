@@ -1,4 +1,3 @@
-import ImageView from "@/components/image-view";
 import ServiceLogo from "@/components/logo";
 import { PublishInfomation } from "@/components/pin-list";
 import {
@@ -14,8 +13,13 @@ import { createClient } from "@/utils/supabase/server";
 import dayjs from "dayjs";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import Alert from "./alart";
-import Modal from "./modal";
+
+import dynamic from "next/dynamic";
+const ImageView = dynamic(() => import("@/components/image-view"), {
+  ssr: false,
+});
+const Alert = dynamic(() => import("./alart"), { ssr: false });
+const Modal = dynamic(() => import("./modal"), { ssr: false });
 
 export async function generateMetadata({
   params,
