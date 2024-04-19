@@ -10,7 +10,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import { cn, formatCustomizedService } from "@/lib/utils";
 import { createClient } from "@/utils/supabase/server";
 import dayjs from "dayjs";
 import { notFound } from "next/navigation";
@@ -79,10 +79,6 @@ async function Pin({ id }: { id: string }) {
   const visitor = await supabase.auth.getUser();
   const isOwner = visitor?.data.user?.id === pin.user_id;
 
-  const beglongService = Object.values(BuildinServices).find(
-    (v) => v === pin.service
-  );
-
   return (
     <main className="w-full flex flex-col space-y-1">
       <div className="w-full flex flex-col bg-background shadow-sm rounded-sm px-2 py-2 space-y-1">
@@ -91,9 +87,7 @@ async function Pin({ id }: { id: string }) {
             { title: "Home", route: "/" },
             {
               title: pin.service,
-              route: beglongService
-                ? `/category/${beglongService}`
-                : `/category?kw=${pin.service}`,
+              route: `/category/${formatCustomizedService(pin.service)}`,
             },
           ]}
         />
