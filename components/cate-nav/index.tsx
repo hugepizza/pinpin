@@ -5,7 +5,7 @@ import Link from "next/link";
 function CategoryNav({ active }: { active: string }) {
   Object.entries;
   return (
-    <div className="flex flex-wrap bg-background py-[0.25rem] w-full rounded-sm shadow-sm aspect-auto">
+    <div className="flex flex-wrap bg-background py-[0.25rem] w-full rounded-sm shadow-sm aspect-auto sm:h-[3rem] items-center">
       {Object.entries(BuildinServices).map((service) => (
         <Link
           className={cn(

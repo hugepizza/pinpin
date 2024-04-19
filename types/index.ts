@@ -86,3 +86,26 @@ export const publishFormSchema = z
     message: "超载了吧？",
     path: ["occupied_slot"],
   });
+
+export type SearchParams = {
+  page: number;
+  service?: string;
+  kw?: string;
+  userId?: string;
+  status?: string;
+};
+
+export const searchParams2QueryUrl = (params: SearchParams) => {
+  const query = new URLSearchParams();
+  query.set("page", params.page.toString());
+  if (params.kw) {
+    query.set("kw", params.kw);
+  }
+  if (params.userId) {
+    query.set("userId", params.userId);
+  }
+  if (params.status) {
+    query.set("status", params.status);
+  }
+  return query.toString();
+};

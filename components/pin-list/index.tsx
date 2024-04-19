@@ -1,4 +1,4 @@
-import { BuildinServices, Pin, PinPeriod } from "@/types";
+import { BuildinServices, Pin, PinPeriod, SearchParams } from "@/types";
 import ServiceLogo from "../logo";
 import dayjs from "dayjs";
 import { createClient } from "@/utils/supabase/server";
@@ -33,11 +33,7 @@ export function PinListSkeleton() {
     </>
   );
 }
-export async function PinList({
-  params,
-}: {
-  params: { service?: string; kw?: string; page: number; userId?: string };
-}) {
+export async function PinList({ params }: { params: SearchParams }) {
   const pageSize = 10;
   const fetch = async ({ service, kw, page, userId }: typeof params) => {
     const supabase = createClient();
@@ -51,14 +47,15 @@ export async function PinList({
       });
     if (userId) {
       sql.eq("user_id", userId);
-    } else {
-      if (service) {
-        sql.eq("service", service);
-      } else {
-        if (kw) {
-          sql.or(`service.like.%${kw}%,title.like.%${kw}%`);
-        }
-      }
+    }
+    if (service) {
+      sql.eq("service", service);
+    }
+    if (kw) {
+      sql.or(`title.like.%${kw}%`);
+    }
+    if (params.status === "active") {
+      sql.is("is_active", true);
     }
 
     const { data: pin } = await sql;
