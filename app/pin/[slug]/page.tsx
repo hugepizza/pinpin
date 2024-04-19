@@ -78,7 +78,6 @@ async function Pin({ id }: { id: string }) {
 
   const visitor = await supabase.auth.getUser();
   const isOwner = visitor?.data.user?.id === pin.user_id;
-  console.log(pin);
 
   const beglongService = Object.values(BuildinServices).find(
     (v) => v === pin.service
@@ -108,13 +107,10 @@ async function Pin({ id }: { id: string }) {
         <div className="p-1">{pin.description}</div>
         {pin.images.length > 0 ? (
           <ImageView
-            images={pin.images.map((img) => {
-              console.log(
+            images={pin.images.map(
+              (img) =>
                 `https://jxiyalqtocywlkrriwcq.supabase.co/storage/v1/object/public/pinpin/${img}`
-              );
-
-              return `https://jxiyalqtocywlkrriwcq.supabase.co/storage/v1/object/public/pinpin/${img}`;
-            })}
+            )}
           />
         ) : (
           <span className="text-sm text-muted-foreground">

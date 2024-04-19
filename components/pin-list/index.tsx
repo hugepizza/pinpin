@@ -131,7 +131,7 @@ export async function PinList({
 
 function ListItem(props: { pin: Pin }) {
   return (
-    <div className="flex flex-row py-1 space-y-1 space-x-2 justify-between w-full border-b last:border-b-0">
+    <div className="flex flex-row py-1 space-y-[0.4rem] space-x-2 justify-between w-full border-b last:border-b-0">
       <ServiceLogo service={props.pin.service} />
       <PinOverview pin={props.pin} />
       <PinStatus pin={props.pin} />
@@ -177,7 +177,7 @@ export function PinTitle({
 
 function PinOverview({ pin }: { pin: Pin }) {
   return (
-    <div className="grow flex flex-col justify-between">
+    <div className="grow flex flex-col space-y-1 justify-between">
       <PinTitle service={pin.service} title={pin.title} id={pin.id} />
 
       <RegionInformation

@@ -54,8 +54,6 @@ export default function Publish() {
     return redirect("/login");
   }
   const onSubmit = async (values: z.infer<typeof publishFormSchema>) => {
-    console.log(values);
-
     try {
       setRequesting(true);
       await publish(values);
